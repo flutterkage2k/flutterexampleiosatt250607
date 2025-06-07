@@ -109,3 +109,104 @@ info.plist
 <!--생략 -->
 
 ```
+
+# Admob 추가
+
+> lib/admob/core/constants/admob_ad_units.dart
+배너 / 전면 실제 ID 추가해야함.
+
+
+> 환경 설정 (admob_constants.dart) - 현재 설정 test
+
+```
+static const String environment = 'test'; // 🔧 여기서 변경!
+// 'test' → 테스트 광고 (수익 없음, 안전)
+// 'real' → 실제 광고 (수익 발생, 승인된 앱만)
+```
+
+
+### android / ios 필수 추가 사항
+
+> android/app/src/main/AndroidManifest.xml
+
+```
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 필수 권한 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> 
+     <!--20.4.0 이하는 admob 사용시 선언 필수-->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+
+생략
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+    </application>
+```
+
+> ios/Runner/Info.plist
+
+```
+    <!-- 📈 Google AdMob 설정 -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-5673747993774414~2343851447</string>
+    <key>NSAdvertisingAttributionReportEndpoint</key>
+    <string>https://adservice.google.com</string>
+
+    <!-- 🎯 SKAdNetwork 식별자 -->
+    <key>SKAdNetworkItems</key>
+    <array>
+        <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>cstr6suwn9.skadnetwork</string>
+        </dict>
+    </array>
+```
+
+### Debug console sample
+
+> 광고는 시뮬레이터에서는 작동을 안합니다(경우에따라 되지만), 실제 디바이스에서 테스트 하세요.
+
+```
+flutter: 🚀 Root 페이지로 이동 시도
+flutter: ✅ Root 페이지 이동 명령 완료
+flutter: 🎮 AdMob 테스트 버튼 클릭됨
+flutter: 🚀 AdMob 테스트 화면으로 이동 시도
+flutter: 🛡️ 안전한 AdMob 테스트 화면 로딩 중
+flutter: 🔧 AdMob 초기화 확인 중...
+flutter: 📱 AdMob 초기화 상태 확인 중...
+2
+flutter: 🔍 실기기/시뮬레이터 정확한 체크 시작...
+flutter: 🍎 iOS 기기 정보:
+flutter: - 모델: iPhone
+flutter: - 기기명: iPhone
+flutter: - 시스템명: iOS
+flutter: - 시스템 버전: 18.5
+flutter: - 실기기 여부: true
+flutter: - 결과: iOS 실제 기기
+flutter: 🔧 실제 기기용 설정 적용 중...
+flutter: 🍎 iOS 기기 정보:
+flutter: - 모델: iPhone
+flutter: - 기기명: iPhone
+flutter: - 시스템명: iOS
+flutter: - 시스템 버전: 18.5
+flutter: - 실기기 여부: true
+flutter: - 결과: iOS 실제 기기
+flutter: 🔧 실제 기기용 설정 적용 중...
+flutter: ✅ AdMob 초기화 완료
+flutter: ✅ 실제 기기용 설정 완료
+flutter: 🎯 배너 광고 로딩 시작 (실제 기기)
+flutter:    - 광고 ID: ca-app-pub-3940256099942544/2934735716
+flutter:    - 환경: test
+flutter: ✅ 실제 기기용 설정 완료
+flutter: 🎯 전면 광고 로딩 시작 (실제 기기)
+flutter:    - 광고 ID: ca-app-pub-3940256099942544/4411468910
+flutter:    - 환경: test
+2
+flutter: 🔧 실제 기기용 광고 요청 생성
+flutter: ✅ 배너 광고 로딩 성공! (실제 기기)
+flutter: ✅ 배너 광고 로딩 성공
+flutter: ✅ 전면 광고 로딩 성공! (실제 기기)
+flutter: ✅ 전면 광고 로딩 성공
+```

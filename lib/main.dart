@@ -1,14 +1,23 @@
 // 📁 파일 위치: lib/main.dart
 // 🚀 앱이 시작되는 진입점
 // iOS에서는 ATT 화면을, 안드로이드에서는 바로 메인 페이지를 보여줘요
+// AdMob 테스트 화면도 추가되었어요
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'admob/presentation/widgets/admob_safe_widgets.dart'; // 안전한 위젯 import
 import 'att/core/att_platform_checker.dart';
 import 'att/presentation/screens/att_screen.dart';
 import 'root_page.dart';
 
-void main() {
+void main() async {
+  // Flutter 바인딩 초기화 (필수!)
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // AdMob 초기화 (광고 로딩 전에 필수!)
+  await MobileAds.instance.initialize();
+
   runApp(
     // Riverpod을 사용하기 위해 ProviderScope로 감싸기
     const ProviderScope(
@@ -23,17 +32,49 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ATT 테스트 앱',
+      title: 'ATT & AdMob 테스트 앱',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         useMaterial3: true,
       ),
       // 플랫폼에 따라 첫 화면 결정
       home: const PlatformAwareHomePage(),
-      // 화면 이동을 위한 라우트 설정
+      // 화면 이동을 위한 라우트 설정 (에러 처리 추가)
       routes: {
         '/root': (context) => const RootPage(),
         '/att': (context) => const ATTScreen(),
+        '/admob': (context) => const AdMobTestScreenSafe(), // 🔧 안전한 버전 사용
+      },
+      // 🔧 라우트 에러 처리 추가
+      onUnknownRoute: (settings) {
+        print('⚠️ 알 수 없는 라우트: ${settings.name}');
+        return MaterialPageRoute(
+          builder: (context) => const RootPage(), // 기본 페이지로 이동
+        );
+      },
+      // 🔧 라우트 생성 에러 처리
+      onGenerateRoute: (settings) {
+        try {
+          print('🔄 라우트 생성: ${settings.name}');
+
+          switch (settings.name) {
+            case '/root':
+              return MaterialPageRoute(builder: (context) => const RootPage());
+            case '/att':
+              return MaterialPageRoute(builder: (context) => const ATTScreen());
+            case '/admob':
+              // 🔧 AdMob 라우트를 안전하게 처리
+              return MaterialPageRoute(
+                builder: (context) => const AdMobTestScreenSafe(),
+              );
+            default:
+              print('⚠️ 지원하지 않는 라우트: ${settings.name}');
+              return MaterialPageRoute(builder: (context) => const RootPage());
+          }
+        } catch (e) {
+          print('❌ 라우트 생성 중 오류: $e');
+          return MaterialPageRoute(builder: (context) => const RootPage());
+        }
       },
     );
   }
@@ -64,7 +105,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ATT 테스트'),
+        title: const Text('ATT & AdMob 테스트'),
       ),
       body: Center(
         child: Column(
@@ -112,6 +153,18 @@ class HomePage extends StatelessWidget {
                 );
               },
               child: const Text('ATT 권한 요청하기'),
+            ),
+            const SizedBox(height: 16),
+
+            // AdMob 테스트 버튼 (새로 추가)
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/admob');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+              ),
+              child: const Text('AdMob 테스트하기'),
             ),
             const SizedBox(height: 16),
 

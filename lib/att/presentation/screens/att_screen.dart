@@ -2,10 +2,12 @@
 // 📱 ATT 권한 요청 메인 화면
 // 모든 위젯들을 조합해서 완성된 ATT 화면을 만들어요
 // 권한이 허용되면 실제 앱의 메인 페이지로 이동해요
+// 안전한 네비게이션 처리가 추가되었어요
 // screens 폴더는 완성된 화면들을 모아둔 곳이에요
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../root_page.dart'; // Root 페이지 import 추가
 import '../../core/constants/att_colors.dart';
 import '../../model/att_status_model.dart';
 import '../providers/att_status_provider.dart';
@@ -33,9 +35,52 @@ class _ATTScreenState extends ConsumerState<ATTScreen> {
     });
   }
 
-  // 권한이 허용된 후 실제 앱의 메인 페이지로 이동하는 함수
+  // 권한이 허용된 후 실제 앱의 메인 페이지로 이동하는 함수 (안전장치 추가)
   void _navigateToRootPage() {
-    Navigator.of(context).pushReplacementNamed('/root');
+    try {
+      print('🚀 Root 페이지로 이동 시도');
+
+      // 현재 컨텍스트가 유효한지 확인
+      if (!mounted) {
+        print('⚠️ 위젯이 마운트되지 않음, 이동 취소');
+        return;
+      }
+
+      // 안전한 네비게이션
+      Navigator.of(context).pushReplacementNamed('/root').catchError((error) {
+        print('❌ Root 페이지 이동 중 오류: $error');
+
+        // 대체 방법: 직접 페이지 교체
+        try {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const RootPage()),
+          );
+          print('✅ 대체 방법으로 Root 페이지 이동 성공');
+        } catch (e) {
+          print('❌ 대체 방법도 실패: $e');
+
+          // 최후 수단: 단순 push
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const RootPage()),
+          );
+        }
+      });
+
+      print('✅ Root 페이지 이동 명령 완료');
+    } catch (e, stackTrace) {
+      print('❌ _navigateToRootPage 전체 오류: $e');
+      print('스택 트레이스: $stackTrace');
+
+      // 최종 안전장치: 간단한 알림만 표시
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('페이지 이동 중 오류가 발생했습니다'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -82,7 +127,9 @@ class _ATTScreenState extends ConsumerState<ATTScreen> {
               const Spacer(),
 
               // '허용' 또는 '계속' 버튼
-              ATTRequestButtonWidget(onContinue: _navigateToRootPage),
+              ATTRequestButtonWidget(
+                onContinue: _navigateToRootPage,
+              ),
               const SizedBox(height: 12),
 
               // 권한이 허용되지 않았을 때만 '나중에' 버튼 보여주기

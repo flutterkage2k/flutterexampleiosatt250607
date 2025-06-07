@@ -15,7 +15,10 @@ class ATTRequestButtonWidget extends ConsumerWidget {
   // 권한이 허용된 후 다음 페이지로 이동할 때 실행할 함수
   final VoidCallback? onContinue;
 
-  const ATTRequestButtonWidget({super.key, this.onContinue});
+  const ATTRequestButtonWidget({
+    super.key,
+    this.onContinue,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +51,9 @@ class ATTRequestButtonWidget extends ConsumerWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: ATTColors.primary,
             foregroundColor: ATTColors.white,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             elevation: 0,
           ),
           child: isRequesting
@@ -60,7 +65,13 @@ class ATTRequestButtonWidget extends ConsumerWidget {
                     valueColor: AlwaysStoppedAnimation<Color>(ATTColors.white),
                   ),
                 )
-              : Text(buttonText, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+              : Text(
+                  buttonText,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
         ),
       ),
     );

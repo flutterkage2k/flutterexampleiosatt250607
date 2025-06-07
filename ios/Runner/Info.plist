@@ -2,9 +2,40 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+    <!-- 📈 Google AdMob 설정 -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-5673747993774414~2343851447</string>
+    <key>NSAdvertisingAttributionReportEndpoint</key>
+    <string>https://adservice.google.com</string>
+
+    <!-- 🎯 SKAdNetwork 식별자 -->
+    <key>SKAdNetworkItems</key>
+    <array>
+        <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>cstr6suwn9.skadnetwork</string>
+        </dict>
+    </array>
+
     <!-- 🔐 추적 관련 권한 설명 -->
     <key>NSUserTrackingUsageDescription</key>
     <string>사용자에게 맞춤형 광고를 제공하기 위해 광고 활동 정보를 수집합니다.</string>
+
+	<!-- 인터넷 사용 권한 (Flutter에서 asset 불러오기에 필요할 수 있음) -->
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+    <!-- 📡 네트워크 디버깅 -->
+    <key>NSBonjourServices</key>
+    <array>
+        <string>_dartobservatory._tcp</string>
+    </array>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Flutter Devtools uses your local network for debugging.</string>
 	
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
