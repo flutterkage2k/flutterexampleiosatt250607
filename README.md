@@ -10,7 +10,9 @@ part 처럼 사용자의 앱에 한부분에 넣어서 몇개의 수정으로 �
 | ![Image](https://github.com/user-attachments/assets/f32955d1-b574-4e27-9852-8ec6f16368e0) | ![Image](https://github.com/user-attachments/assets/56d50f1b-cb26-41a0-a8ac-d3a562cedf08)|
 
 
-!!! success "보다 자세한 내용은 아래의 링크"
+> ** "보다 자세한 내용은 아래의 링크" **
+> https://is.gd/aqto5W
+
 
 
 
